@@ -15,7 +15,7 @@
 
 t_philo	fill_struct(char **argv, int opt)
 {
-	t_philo philo;
+	t_philo	philo;
 
 	philo = malloc(sizeof(t_philo));
 	philo.nphilo = atoi(argv[1]);
@@ -25,7 +25,7 @@ t_philo	fill_struct(char **argv, int opt)
 	if (opt == 1)
 		philo.eat = atoi(argv[5]);
 	else
-		philo.eat = 0;	
+		philo.eat = 0;
 	return (philo);
 }
 
@@ -40,7 +40,8 @@ void	philosopher(char **argv, int opt)
 void	arg_error(void)
 {
 	printf("You need 4 or 5 arguments\n");
-	printf("./philo <time_to_death> <time_to_eat> <time_to_sleep> <number_of_times_each_philosopher_must_eat> (optional)");
+	printf("./philo <time_to_death> <time_to_eat> <time_to_sleep> ");
+	printf("<number_of_times_each_philosopher_must_eat> (optional)");
 }
 
 int	main(int argc, char	**argv)
