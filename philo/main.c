@@ -39,16 +39,15 @@ void	philosopher(char **argv, int opt)
 
 void	arg_error(void)
 {
-	printf("need 5 arguments\n");
-	printf("You need to put all arguments :\n");
-	printf("./philo <time_to_death> <time_to_eat> <time_to_sleep> <eat> (optional)");
+	printf("You need 4 or 5 arguments\n");
+	printf("./philo <time_to_death> <time_to_eat> <time_to_sleep> <number_of_times_each_philosopher_must_eat> (optional)");
 }
 
 int	main(int argc, char	**argv)
 {
 	if (argc == 5 || argc == 6)
 	{
-		philosopher(argv, argv - 5)
+		philosopher(argv, argv - 5);
 	}
 	else
 		arg_error();
