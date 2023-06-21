@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <sys/time.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 void philosopher_thinking(t_philo *philo, int id)
 {
@@ -146,7 +143,7 @@ int	thread_create(t_philo *philo)
 	while (i < philo->nphilo)
 	{
 		philo->utils.id = i + 1;
-		pthread_create(&philo->utils.thread[i], NULL, philosopher, &philo);
+		pthread_create(&philo->utils.thread[i], NULL, philosopher, (void *)(&philo));
 		i += 2;
 		usleep(10);
 	}
@@ -155,7 +152,7 @@ int	thread_create(t_philo *philo)
 	while (i < philo->nphilo)
 	{
 		philo->utils.id = i + 1;
-		pthread_create(&philo->utils.thread[i], NULL, philosopher, &philo);
+		pthread_create(&philo->utils.thread[i], NULL, philosopher, (void *)(&philo));
 		i += 2;
 	}
 	return (0);
@@ -279,13 +276,13 @@ int	ft_atoi(char *str)
 	return (res);
 }
 
-void	create_mutex(t_philo philo)
+void	create_mutex(t_philo *philo)
 {
 	int i;
 
 	i = 0;
-	printf("%d", philo.nphilo);
-	while (i < philo.nphilo)
+	printf("%d", philo->nphilo);
+	while (i < philo->nphilo)
 	{
 		pthread_mutex_init(&philo.utils.mutex[i], NULL);
 		i++;
