@@ -1,2 +1,5 @@
 200 is the max of philosophers
 no limits for others
+
+------------
+SEGFAULT sur l envoie de la structure aux threads
