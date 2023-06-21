@@ -16,54 +16,44 @@ void philosopher_thinking(t_philo *philo, int id)
 {
 	long long time_in_ms;
 
-	time_in_ms = (long long)get_ms - philo->time.in_ms_start;
+	time_in_ms = get_ms() - philo->time.in_ms_start;
 	if (philo->isdead == false)
-		printf(" %lld %d is thinking\n", time_in_ms, id);
+		printf("%lld %d is thinking\n", time_in_ms, id);
 	return ;
 }
 
 int	philosopher_eating(t_philo *philo, int id)
 {
-	long long time_in_ms;
-	int i;
+	long long	time_in_ms;
 
-	i = 0;
+	time_in_ms = get_ms() - philo->time.in_ms_start;
 	pthread_mutex_lock(&philo->utils.mutex[id]);
-	time_in_ms = (long long)get_ms - philo->time.in_ms_start;
 	if (philo->isdead == true)
-	{
-		pthread_mutex_unlock(&philo->utils.mutex[id]);
-		return (0);
-	}
-	printf(" %lld %d has taken a fork\n", time_in_ms, id);
+		return (philo_unlock(philo, id, false));
+	printf("%lld %d has taken a fork (%d)\n", time_in_ms, id, id);
 	pthread_mutex_lock(&philo->utils.mutex[id + 1]);
 	if (philo->isdead == true)
-	{
-		pthread_mutex_unlock(&philo->utils.mutex[id]);
-		pthread_mutex_unlock(&philo->utils.mutex[id + 1]);
-		return (0);
-	}
-	time_in_ms =(long long)get_ms - philo->time.in_ms_start;
-	printf("%lld %d has taken a fork\n", time_in_ms, id);
+		return (philo_unlock(philo, id, true));
+	time_in_ms = get_ms() - philo->time.in_ms_start;
+	printf("%lld %d has taken a fork (%d)\n", time_in_ms, id, id + 1);
 	printf("%lld %d is eating\n", time_in_ms, id);
-	while (time_in_ms + philo->time.to_eat>(long long)get_ms - philo->time.in_ms_start)
-		i++;
+	while (time_in_ms + philo->time.to_eat > get_ms() - philo->time.in_ms_start)
+		usleep(100);
+	philo_unlock(philo, id, true);
 	return (time_in_ms);
 }
 
 void	philosopher_sleeping(t_philo *philo, int id)
 {
 	long long time_in_ms;
-	int	i;
 
-	time_in_ms =(long long)get_ms - (long long)philo->time.in_ms_start;
-	i = 0;
+	time_in_ms = get_ms() - philo->time.in_ms_start;
 	if (philo->isdead == true)
 		return ;
 	printf("%lld %d is sleeping\n", time_in_ms, id);
 	time_in_ms += (long long)philo->time.to_sleep;
-	while (time_in_ms >(long long)get_ms - philo->time.in_ms_start)
-		i++;
+	while (time_in_ms > get_ms() - philo->time.in_ms_start)
+		usleep(100);
 	return ;
 }
 
@@ -71,7 +61,7 @@ void	philosopher_died(t_philo *philo, int id)
 {
 	long long time_in_ms;
 
-	time_in_ms =(long long)get_ms - philo->time.in_ms_start;
+	time_in_ms = get_ms() - philo->time.in_ms_start;
 	printf("%lld %d died\n", time_in_ms, id);
 	philo->isdead = true;
 	return ;
@@ -82,8 +72,17 @@ long long	get_ms()
 	struct timeval tv;
 	long long ms;
 
+	gettimeofday(&tv, NULL),
 	ms = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
 	return (ms);
+}
+
+int	philo_unlock(t_philo *philo, int id, bool all)
+{
+	pthread_mutex_unlock(&philo->utils.mutex[id]);
+	if (all == true)
+		pthread_mutex_unlock(&philo->utils.mutex[id + 1]);
+	return (0);
 }
 
 void *philosopher(void *void_philo)
@@ -94,12 +93,14 @@ void *philosopher(void *void_philo)
 
 	philo = (t_philo *)void_philo;
 	id = philo->utils.id;
+	time_in_ms = get_ms() - philo->time.in_ms_start;
 	while (philo->isdead == false)
 	{
 		philosopher_thinking(philo, id);
 		time_in_ms = philosopher_eating(philo, id);
 		philosopher_sleeping(philo, id);
-		if (time_in_ms + philo->time.to_die < (long long)get_ms -  philo->time.in_ms_start)
+		printf("test %lld %lld\n", time_in_ms + philo->time.to_die, get_ms() -  philo->time.in_ms_start);
+		if (time_in_ms + philo->time.to_die < get_ms() -  philo->time.in_ms_start && philo->isdead == false)
 		{
 			philosopher_died(philo, id);
 			break ;
@@ -108,51 +109,26 @@ void *philosopher(void *void_philo)
 	return (NULL);
 }
 
-void *test(void *test)
-{
-	t_philo *philo;
-	int	id;
-
-	philo = (t_philo *)test;
-	id = philo->utils.id;
-	printf("created %d\n", id);
-	if (!test)
-		return (NULL);
-	return (NULL);
-}
-
-void *test2(void *test)
-{
-	int	id;
-
-	id = (int)test;
-	printf("operationnal %d\n", id);
-	if (!test)
-		return (NULL);
-	return (NULL);
-}
-
 int	thread_create(t_philo *philo)
 {
 	int	i;
-	struct timeval tv;
 
 	i = 0;
-	gettimeofday(&tv, NULL);
-	philo->time.in_ms_start = (long long)get_ms();
+	philo->time.in_ms_start = get_ms();
 	while (i < philo->nphilo)
 	{
 		philo->utils.id = i + 1;
-		pthread_create(&philo->utils.thread[i], NULL, philosopher, (void *)(&philo));
+		pthread_create(&philo->utils.thread[i], NULL, philosopher, (void *)philo);
+		usleep(100);
 		i += 2;
-		usleep(10);
 	}
-	usleep(50);
+	usleep(10);
 	i = 1;
 	while (i < philo->nphilo)
 	{
 		philo->utils.id = i + 1;
-		pthread_create(&philo->utils.thread[i], NULL, philosopher, (void *)(&philo));
+		pthread_create(&philo->utils.thread[i], NULL, philosopher, (void *)philo);
+		usleep(100);
 		i += 2;
 	}
 	return (0);
@@ -281,10 +257,10 @@ void	create_mutex(t_philo *philo)
 	int i;
 
 	i = 0;
-	printf("%d", philo->nphilo);
 	while (i < philo->nphilo)
 	{
-		pthread_mutex_init(&philo.utils.mutex[i], NULL);
+		pthread_mutex_init(&philo->utils.mutex[i], NULL);
+		usleep(100);
 		i++;
 	}
 	return ;
@@ -306,8 +282,8 @@ void philo_main(int argc, char **argv)
 		philo->limit_eat = ft_atoi(argv[5]);
 	else
 		philo->limit_eat = -1;
-	create_mutex(&philo);
-	thread_create(&philo);
+	create_mutex(philo);
+	thread_create(philo);
 }
 
 int	arg_verif(char **argv, int argc)
