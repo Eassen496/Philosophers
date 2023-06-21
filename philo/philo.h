@@ -14,14 +14,29 @@
 # define PHILO_H
 
 # include <sys/time.h>
+# include <pthread.h>
+
+typedef struct s_utils
+{
+	pthread_t			thread[201];
+	pthread_mutex_t		mutex[201];
+	int					id;
+}	t_utils;
+
 
 typedef struct	s_philo
 {
-	int		nphilo;
-	timeval	ttd;
-	timeval	tte;
-	timeval	tts;
-	int		eat;
+	int			nphilo;
+	int			ttd;
+	int			tte;
+	int			tts;
+	int			eat;
+	t_utils		utils;
 }	t_philo;
+
+int	arg_error_0(void);
+int	arg_error_1(void);
+int	arg_error_2(void);
+int	arg_error_3(void);
 
 #endif
