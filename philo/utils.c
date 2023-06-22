@@ -30,16 +30,20 @@ int	philosopher_eating(t_philo *philo, int id)
 	pthread_mutex_lock(&philo->utils.mutex[id]);
 	if (philo->isdead == true)
 		return (philo_unlock(philo, id, false));
-	printf("%lld %d has taken a fork (%d)\n", time_in_ms, id, id);
-	pthread_mutex_lock(&philo->utils.mutex[id + 1]);
+	printf("%lld %d has taken a fork\n", time_in_ms, id);
+	if (id == philo->nphilo)
+		pthread_mutex_lock(&philo->utils.mutex[0]);
+	else
+		pthread_mutex_lock(&philo->utils.mutex[id + 1]);
 	if (philo->isdead == true)
 		return (philo_unlock(philo, id, true));
 	time_in_ms = get_ms() - philo->time.in_ms_start;
-	printf("%lld %d has taken a fork (%d)\n", time_in_ms, id, id + 1);
+	printf("%lld %d has taken a fork\n", time_in_ms, id);
 	printf("%lld %d is eating\n", time_in_ms, id);
 	while (time_in_ms + philo->time.to_eat > get_ms() - philo->time.in_ms_start)
-		usleep(100);
+		usleep(10);
 	philo_unlock(philo, id, true);
+	philo->utils.eat[id]++;
 	return (time_in_ms);
 }
 
@@ -62,7 +66,8 @@ void	philosopher_died(t_philo *philo, int id)
 	long long time_in_ms;
 
 	time_in_ms = get_ms() - philo->time.in_ms_start;
-	printf("%lld %d died\n", time_in_ms, id);
+	if (philo->isdead == false)
+		printf("%lld %d died\n", time_in_ms, id);
 	philo->isdead = true;
 	return ;
 }
@@ -81,8 +86,32 @@ int	philo_unlock(t_philo *philo, int id, bool all)
 {
 	pthread_mutex_unlock(&philo->utils.mutex[id]);
 	if (all == true)
-		pthread_mutex_unlock(&philo->utils.mutex[id + 1]);
+	{
+		if (id == philo->nphilo)
+			pthread_mutex_unlock(&philo->utils.mutex[0]);
+		else
+			pthread_mutex_unlock(&philo->utils.mutex[id + 1]);
+	}
 	return (0);
+}
+
+void eat_verif(t_philo *philo)
+{
+	int	i;
+
+	i = 1;
+	while (i < philo->nphilo - 1)
+	{
+		if (philo->utils.eat[i] == philo->utils.eat[i + 1])
+			i++;
+		else
+			break ;
+	}
+	if ((i == philo->nphilo - 1) && (philo->utils.eat[i] == philo->utils.eat[i + 1]) && (philo->utils.eat[i] != philo->utils.all_eat))
+		philo->utils.all_eat++;
+	if (philo->utils.all_eat == philo->limit_eat)
+		philo->isdead = true;
+	return ;
 }
 
 void *philosopher(void *void_philo)
@@ -97,9 +126,14 @@ void *philosopher(void *void_philo)
 	while (philo->isdead == false)
 	{
 		philosopher_thinking(philo, id);
+		if (time_in_ms + philo->time.to_die < get_ms() -  philo->time.in_ms_start && philo->isdead == false)
+		{
+			philosopher_died(philo, id);
+			break ;
+		}
 		time_in_ms = philosopher_eating(philo, id);
+		eat_verif(philo);
 		philosopher_sleeping(philo, id);
-		printf("test %lld %lld\n", time_in_ms + philo->time.to_die, get_ms() -  philo->time.in_ms_start);
 		if (time_in_ms + philo->time.to_die < get_ms() -  philo->time.in_ms_start && philo->isdead == false)
 		{
 			philosopher_died(philo, id);
@@ -130,6 +164,13 @@ int	thread_create(t_philo *philo)
 		pthread_create(&philo->utils.thread[i], NULL, philosopher, (void *)philo);
 		usleep(100);
 		i += 2;
+	}
+	i = 0;
+	while (i < philo->nphilo)
+	{
+		pthread_join(philo->utils.thread[i], NULL);
+		usleep(100);
+		i++;
 	}
 	return (0);
 }
@@ -266,6 +307,34 @@ void	create_mutex(t_philo *philo)
 	return ;
 }
 
+void	destroy_mutex(t_philo *philo)
+{
+	int i;
+
+	i = 0;
+	while (i < philo->nphilo)
+	{
+		pthread_mutex_destroy(&philo->utils.mutex[i]);
+		usleep(100);
+		i++;
+	}
+	return ;
+}
+
+void philo_eat_fill(t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	while (i < philo->nphilo)
+	{
+		philo->utils.eat[i++] = 0;
+		printf("%d", i);
+	}
+	philo->utils.all_eat = 0;
+	return ;
+}
+
 void philo_main(int argc, char **argv)
 {
 	t_philo *philo;
@@ -278,12 +347,18 @@ void philo_main(int argc, char **argv)
 	philo->time.to_eat = ft_atoi(argv[3]);
 	philo->time.to_sleep = ft_atoi(argv[4]);
 	philo->isdead = false;
+	philo_eat_fill(philo);
 	if (argc == 6)
 		philo->limit_eat = ft_atoi(argv[5]);
 	else
 		philo->limit_eat = -1;
 	create_mutex(philo);
 	thread_create(philo);
+	if (philo->isdead == true)
+	{
+		destroy_mutex(philo);
+		free(philo);
+	}
 }
 
 int	arg_verif(char **argv, int argc)
@@ -306,10 +381,40 @@ int	arg_verif(char **argv, int argc)
 	return (0);
 }
 
+void *unique_philosopher2(void *void_unique)
+{
+	t_unique	*unique;
+
+	unique = (t_unique *)void_unique;
+	unique->time = get_ms();
+	printf("%lld %d is thinking\n", get_ms() - unique->time, 1);
+	pthread_mutex_lock(&unique->mutex);
+	printf("%lld %d is taking a fork\n", get_ms() - unique->time, 1);
+	usleep(ft_atoi(unique->argv[2]) * 1000);
+	printf("%lld %d died\n", get_ms() - unique->time, 1);
+	pthread_mutex_unlock(&unique->mutex);
+	return (NULL);
+}
+
 int	unique_case(int argc, char **argv)
 {
-	(void)argc;
-	(void)argv;
-	printf("Working on it\n");
+	t_unique			*unique;
+	pthread_t			thread[1];
+	int					i;
+	
+	i = 0;
+	unique = (t_unique *)malloc(1 * sizeof(t_unique));
+	unique->argc = argc;
+	unique->argv = argv;
+	pthread_mutex_init(&unique->mutex, NULL);
+	while (i < 1)
+	{
+		pthread_create(&thread[i], NULL, unique_philosopher2, (void *)unique);
+		usleep(100);
+		i++;
+	}
+	pthread_join(thread[0], NULL);
+	pthread_mutex_destroy(&unique->mutex);
+	free(unique);
 	return (0);
 }

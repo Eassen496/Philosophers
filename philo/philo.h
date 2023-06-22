@@ -20,12 +20,21 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+typedef struct s_unique
+{
+	int					argc;
+	char				**argv;
+	long long			time;
+	pthread_mutex_t		mutex;
+}	t_unique;
 
 typedef struct s_utils
 {
 	pthread_t			thread[201];
 	pthread_mutex_t		mutex[201];
 	int					id;
+	int					eat[201];
+	int					all_eat;
 }	t_utils;
 
 typedef struct	s_time
@@ -62,9 +71,12 @@ size_t		ft_strlen(char *str);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 char		*ft_itoa(int n);
 int			ft_atoi(char *str);
-void		create_mutex(t_philo philo);
+void		create_mutex(t_philo *philo);
 void		philo_main(int argc, char **argv);
 int			arg_verif(char **argv, int argc);
 int			unique_case();
+int			philo_unlock(t_philo *philo, int id, bool all);
+void		*unique_philosopher(void *void_unique);
+
 
 #endif
