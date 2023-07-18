@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ale-roux <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 23:58:46 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/01/19 23:02:07 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/07/18 22:10:52 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,13 @@ int	philosopher_eating(t_philo *philo, int id)
 {
 	long long	time_in_ms;
 
-	time_in_ms = get_ms() - philo->time.in_ms_start;
 	pthread_mutex_lock(&philo->utils.mutex[id]);
 	if (philo->isdead == true)
 		return (philo_unlock(philo, id, false));
+	time_in_ms = get_ms() - philo->time.in_ms_start;
 	printf("%lld %d has taken a fork\n", time_in_ms, id);
 	if (id == philo->nphilo)
-		pthread_mutex_lock(&philo->utils.mutex[0]);
+		pthread_mutex_lock(&philo->utils.mutex[1]);
 	else
 		pthread_mutex_lock(&philo->utils.mutex[id + 1]);
 	if (philo->isdead == true)
@@ -88,7 +88,7 @@ int	philo_unlock(t_philo *philo, int id, bool all)
 	if (all == true)
 	{
 		if (id == philo->nphilo)
-			pthread_mutex_unlock(&philo->utils.mutex[0]);
+			pthread_mutex_unlock(&philo->utils.mutex[1]);
 		else
 			pthread_mutex_unlock(&philo->utils.mutex[id + 1]);
 	}
@@ -327,10 +327,7 @@ void philo_eat_fill(t_philo *philo)
 
 	i = 0;
 	while (i < philo->nphilo)
-	{
 		philo->utils.eat[i++] = 0;
-		printf("%d", i);
-	}
 	philo->utils.all_eat = 0;
 	return ;
 }
