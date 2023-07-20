@@ -6,14 +6,11 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 23:58:46 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/20 01:57:40 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/07/20 02:02:33 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-#include <sys/time.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "./header/philo.h"
 
 void	philo_eat_fill(t_philo *philo)
 {
