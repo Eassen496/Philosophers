@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 01:46:15 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/20 02:00:39 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/07/26 23:04:12 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,14 @@ void	create_mutex(t_philo *philo)
 {
 	int	i;
 
-	i = 0;
-	while (i < philo->nphilo)
+	i = 1;
+	while (i < philo->nphilo + 1)
 	{
 		pthread_mutex_init(&philo->utils.mutex[i], NULL);
 		usleep(100);
 		i++;
 	}
+	pthread_mutex_init(&philo->utils.talk, NULL);
 	return ;
 }
 
@@ -43,8 +44,8 @@ void	destroy_mutex(t_philo *philo)
 {
 	int	i;
 
-	i = 0;
-	while (i < philo->nphilo)
+	i = 1;
+	while (i < philo->nphilo + 1)
 	{
 		pthread_mutex_destroy(&philo->utils.mutex[i]);
 		usleep(100);

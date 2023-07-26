@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 01:42:56 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/20 02:00:43 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/07/26 18:11:34 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,27 @@ void	*p(void *void_philo)
 	return (NULL);
 }
 
+void	thread_join(t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	if (philo->nphilo == 2)
+	{
+		pthread_join(philo->utils.thread[0], NULL);
+		usleep(100);
+		pthread_join(philo->utils.thread[1], NULL);
+	}
+	else
+	{
+		while (i < philo->nphilo)
+		{
+			pthread_join(philo->utils.thread[i++], NULL);
+			usleep(100);
+		}
+	}
+}
+
 int	thread_create(t_philo *philo)
 {
 	int	i;
@@ -55,12 +76,7 @@ int	thread_create(t_philo *philo)
 		pthread_create(&philo->utils.thread[i += 2], NULL, p, (void *)philo);
 		usleep(100);
 	}
-	i = 0;
-	while (i < philo->nphilo)
-	{
-		pthread_join(philo->utils.thread[i++], NULL);
-		usleep(100);
-	}
+	thread_join(philo);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 22:35:12 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/20 01:58:29 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/07/26 23:04:48 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct s_utils
 {
 	pthread_t			thread[201];
 	pthread_mutex_t		mutex[201];
+	pthread_mutex_t		talk;
 	int					id;
 	int					eat[201];
 	int					all_eat;
