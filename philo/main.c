@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 23:58:46 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/20 02:02:33 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/07/27 03:46:45 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ int	main(int argc, char	**argv)
 	if (arg_verif(argv, argc) != 0)
 		return (1);
 	if (ft_atoi(argv[1]) == 1)
-		return (unique_case(argc, argv));
-	philo_main(argc, argv);
+		unique_case(argc, argv);
+	else
+		philo_main(argc, argv);
 	return (0);
 }

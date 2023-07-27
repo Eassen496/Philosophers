@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 22:35:12 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/26 23:04:48 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/07/27 02:02:50 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,16 @@ typedef struct s_unique
 	long long			time;
 	pthread_mutex_t		mutex;
 }	t_unique;
+
+typedef struct s_duo
+{
+	int					argc;
+	char				**argv;
+	long long			time;
+	pthread_mutex_t		mutex[2];
+	int					id;
+	bool				dead;
+}	t_duo;
 
 typedef struct s_utils
 {
@@ -82,5 +92,6 @@ char		*ft_itoa(int n);
 void		philo_eat_fill(t_philo *philo);
 void		philo_main(int argc, char **argv);
 int			arg_verif(char **argv, int argc);
+void		duo_case(int argc, char **argv);
 
 #endif
