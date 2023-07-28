@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 01:41:09 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/20 02:00:51 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/07/29 00:25:51 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,19 @@ int	dead_verif(long long time_in_ms, t_philo *philo, int id)
 
 int	arg_verif(char **argv, int argc)
 {
-	int	i;
+	int		i;
+	char	*str;
 
 	i = 1;
 	while (i < argc)
 	{
-		if (ft_strncmp(argv[i], ft_itoa(ft_atoi(argv[i])), ft_strlen(argv[i])))
+		str = ft_itoa(ft_atoi(argv[i]));
+		if (ft_strncmp(argv[i], str, ft_strlen(argv[i])))
 			return (arg_error_1());
 		if (ft_atoi(argv[i]) < 0)
 			return (arg_error_2());
 		i++;
+		free(str);
 	}
 	if (ft_atoi(argv[1]) == 0)
 		return (arg_error_3());
