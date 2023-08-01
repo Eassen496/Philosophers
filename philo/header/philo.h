@@ -33,6 +33,7 @@ typedef struct s_utils
 	pthread_t			thread[201];
 	pthread_mutex_t		mutex[201];
 	pthread_mutex_t		talk;
+	pthread_mutex_t		die;
 	int					id;
 	int					eat[201];
 	int					all_eat;

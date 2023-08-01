@@ -37,6 +37,7 @@ void	create_mutex(t_philo *philo)
 		i++;
 	}
 	pthread_mutex_init(&philo->utils.talk, NULL);
+	pthread_mutex_init(&philo->utils.die, NULL);
 	return ;
 }
 

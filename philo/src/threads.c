@@ -21,8 +21,10 @@ void	*p(void *void_philo)
 	philo = (t_philo *)void_philo;
 	id = philo->utils.id;
 	time_in_ms = get_ms() - philo->time.in_ms_start;
+	pthread_mutex_lock(&philo->utils.die);
 	while (philo->isdead == false)
 	{
+		pthread_mutex_unlock(&philo->utils.die);
 		philosopher_thinking(philo, id);
 		if (dead_verif(time_in_ms, philo, id) == 1)
 			break ;
@@ -32,7 +34,9 @@ void	*p(void *void_philo)
 		philosopher_sleeping(philo, id, time_in_ms);
 		if (dead_verif(time_in_ms, philo, id) == 1)
 			break ;
+		pthread_mutex_lock(&philo->utils.die);		
 	}
+	pthread_mutex_unlock(&philo->utils.die);
 	return (NULL);
 }
 

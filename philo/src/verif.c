@@ -21,12 +21,16 @@ void	eat_verif(t_philo *philo, int id)
 
 int	dead_verif(long long time_in_ms, t_philo *philo, int id)
 {
+	pthread_mutex_lock(&philo->utils.die);
 	if (time_in_ms + philo->time.to_die < get_ms() - philo->time.in_ms_start
 		&& philo->isdead == false)
 	{
+		printf("BONJOUR %llu %llu\n", time_in_ms + philo->time.to_die, get_ms() - philo->time.in_ms_start);
+		pthread_mutex_unlock(&philo->utils.die);
 		philosopher_died(philo, id);
 		return (1);
 	}
+	pthread_mutex_unlock(&philo->utils.die);
 	return (0);
 }
 

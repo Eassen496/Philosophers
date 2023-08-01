@@ -41,26 +41,40 @@ void	philosopher_thinking(t_philo *philo, int id)
 	return ;
 }
 
-int	philosopher_eating(t_philo *philo, int id, long long last)
+int	philosopher_eating(t_philo *philo, int id, long long time_in_ms)
 {
-	long long	time_in_ms;
-
 	pthread_mutex_lock(&philo->utils.mutex[id]);
+	pthread_mutex_lock(&philo->utils.die);
 	if (philo->isdead == true)
-		return (philo_unlock(philo, id, false));
+	{
+		pthread_mutex_unlock(&philo->utils.die);
+		return (philo_unlock(philo, id, true));
+	}
+	pthread_mutex_unlock(&philo->utils.die);
 	time_in_ms = get_ms() - philo->time.in_ms_start;
 	talk(philo, id, time_in_ms, 1);
 	if (id == philo->nphilo)
 		pthread_mutex_lock(&philo->utils.mutex[1]);
 	else
 		pthread_mutex_lock(&philo->utils.mutex[id + 1]);
+	pthread_mutex_lock(&philo->utils.die);
 	if (philo->isdead == true)
+	{
+		pthread_mutex_unlock(&philo->utils.die);
 		return (philo_unlock(philo, id, true));
+	}
+	pthread_mutex_unlock(&philo->utils.die);
 	time_in_ms = get_ms() - philo->time.in_ms_start;
 	talk(philo, id, time_in_ms, 1);
-	if (last + philo->time.to_die < get_ms() - philo->time.in_ms_start
+	pthread_mutex_lock(&philo->utils.die);
+	if (time_in_ms + philo->time.to_die < get_ms() - philo->time.in_ms_start
 		&& philo->isdead == false)
+	{
+		printf("BONJOUR %llu %llu\n", time_in_ms + philo->time.to_die, get_ms() - philo->time.in_ms_start);
+		pthread_mutex_unlock(&philo->utils.die);
 		philosopher_died(philo, id);
+	}
+	pthread_mutex_unlock(&philo->utils.die);
 	talk(philo, id, time_in_ms, 2);
 	while (time_in_ms + philo->time.to_eat > get_ms() - philo->time.in_ms_start)
 		usleep(10);
@@ -94,6 +108,8 @@ void	philosopher_died(t_philo *philo, int id)
 	time_in_ms = get_ms() - philo->time.in_ms_start;
 	if (philo->isdead == false)
 		talk(philo, id, time_in_ms, 4);
+	pthread_mutex_lock(&philo->utils.die);
 	philo->isdead = true;
+	pthread_mutex_unlock(&philo->utils.die);
 	return ;
 }
