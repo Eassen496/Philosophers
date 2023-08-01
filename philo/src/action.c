@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 01:38:57 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/26 23:18:21 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/08/01 02:56:04 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ int	philosopher_eating(t_philo *philo, int id, long long last)
 		return (philo_unlock(philo, id, true));
 	time_in_ms = get_ms() - philo->time.in_ms_start;
 	talk(philo, id, time_in_ms, 1);
-	talk(philo, id, time_in_ms, 2);
 	if (last + philo->time.to_die < get_ms() - philo->time.in_ms_start
 		&& philo->isdead == false)
 		philosopher_died(philo, id);
+	talk(philo, id, time_in_ms, 2);
 	while (time_in_ms + philo->time.to_eat > get_ms() - philo->time.in_ms_start)
 		usleep(10);
 	philo_unlock(philo, id, true);

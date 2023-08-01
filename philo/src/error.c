@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/18 23:53:14 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/20 02:00:34 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/07/31 00:27:23 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,17 @@ int	arg_error_3(void)
 	return (1);
 }
 
-int	arg_error_2(void)
+int	arg_error_2(char *str)
 {
 	printf("Error ! You gave incorrect value (negative value)\n");
+	free(str);
 	return (1);
 }
 
-int	arg_error_1(void)
+int	arg_error_1(char *str)
 {
 	printf("Error ! You gave non-number character\n");
+	free(str);
 	return (1);
 }
 

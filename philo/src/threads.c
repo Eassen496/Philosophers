@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 01:42:56 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/27 03:46:26 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/07/31 01:49:07 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ void	*p(void *void_philo)
 		if (dead_verif(time_in_ms, philo, id) == 1)
 			break ;
 		time_in_ms = philosopher_eating(philo, id, time_in_ms);
-		eat_verif(philo);
+		if ((id == philo->nphilo || id == philo->nphilo - 1) && id % 2 == 0)
+			eat_verif(philo, id);
 		philosopher_sleeping(philo, id, time_in_ms);
 		if (dead_verif(time_in_ms, philo, id) == 1)
 			break ;

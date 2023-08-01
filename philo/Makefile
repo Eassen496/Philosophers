@@ -6,7 +6,7 @@
 #    By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/06 21:21:04 by ale-roux          #+#    #+#              #
-#    Updated: 2023/07/27 03:46:52 by ale-roux         ###   ########.fr        #
+#    Updated: 2023/08/01 02:47:19 by ale-roux         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,14 +16,13 @@ OBJS	  =  ${SRCS:.c=.o}
 EXE       = philo
 
 all : ${NAME}
-	gcc -Wall -Werror -Wextra main.c ${NAME} -lpthread -o ${EXE}
-
 .c.o	:
 		gcc -Wall -Wextra -Werror -c $< -o ${<:.c=.o}
 
 
 ${NAME} : ${OBJS}
 		ar rc ${NAME} ${OBJS}
+		gcc -Wall -Werror -Wextra main.c ${NAME} -lpthread -o ${EXE}
 
 clean :
 		rm -f ${OBJS} exec

@@ -6,29 +6,15 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 01:41:09 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/29 00:25:51 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/08/01 00:34:07 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/philo.h"
 
-void	eat_verif(t_philo *philo)
+void	eat_verif(t_philo *philo, int id)
 {
-	int	i;
-
-	i = 1;
-	while (i < philo->nphilo - 1)
-	{
-		if (philo->utils.eat[i] == philo->utils.eat[i + 1])
-			i++;
-		else
-			break ;
-	}
-	if ((i == philo->nphilo - 1)
-		&& (philo->utils.eat[i] == philo->utils.eat[i + 1])
-		&& (philo->utils.eat[i] != philo->utils.all_eat))
-		philo->utils.all_eat++;
-	if (philo->utils.all_eat == philo->limit_eat)
+	if (philo->utils.eat[id] == philo->limit_eat)
 		philo->isdead = true;
 	return ;
 }
@@ -54,9 +40,9 @@ int	arg_verif(char **argv, int argc)
 	{
 		str = ft_itoa(ft_atoi(argv[i]));
 		if (ft_strncmp(argv[i], str, ft_strlen(argv[i])))
-			return (arg_error_1());
+			return (arg_error_1(str));
 		if (ft_atoi(argv[i]) < 0)
-			return (arg_error_2());
+			return (arg_error_2(str));
 		i++;
 		free(str);
 	}
