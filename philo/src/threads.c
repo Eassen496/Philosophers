@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 01:42:56 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/31 01:49:07 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/08/02 01:52:40 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	*p(void *void_philo)
 		philosopher_sleeping(philo, id, time_in_ms);
 		if (dead_verif(time_in_ms, philo, id) == 1)
 			break ;
-		pthread_mutex_lock(&philo->utils.die);		
+		pthread_mutex_lock(&philo->utils.die);
 	}
 	pthread_mutex_unlock(&philo->utils.die);
 	return (NULL);

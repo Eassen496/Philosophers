@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 22:35:12 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/31 01:50:04 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/08/02 01:54:07 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,6 @@ void		philo_eat_fill(t_philo *philo);
 void		philo_main(int argc, char **argv);
 int			arg_verif(char **argv, int argc);
 void		duo_case(int argc, char **argv);
+void		talk(t_philo *philo, int id, long long time_in_ms, int action);
 
 #endif

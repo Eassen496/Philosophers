@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 01:41:09 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/08/01 00:34:07 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/08/02 01:52:52 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int	dead_verif(long long time_in_ms, t_philo *philo, int id)
 	if (time_in_ms + philo->time.to_die < get_ms() - philo->time.in_ms_start
 		&& philo->isdead == false)
 	{
-		printf("BONJOUR %llu %llu\n", time_in_ms + philo->time.to_die, get_ms() - philo->time.in_ms_start);
 		pthread_mutex_unlock(&philo->utils.die);
 		philosopher_died(philo, id);
 		return (1);
