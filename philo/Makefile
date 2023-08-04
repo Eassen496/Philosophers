@@ -6,11 +6,11 @@
 #    By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/06 21:21:04 by ale-roux          #+#    #+#              #
-#    Updated: 2023/08/02 01:57:49 by ale-roux         ###   ########.fr        #
+#    Updated: 2023/08/04 02:58:09 by ale-roux         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS	  =  ./src/action.c ./src/atoi.c ./src/error.c ./src/mutex.c ./src/threads.c ./src/utils.c ./src/utils2.c ./src/verif.c
+SRCS	  =  ./src/action.c ./src/atoi.c ./src/error.c ./src/mutex.c ./src/threads.c ./src/utils.c ./src/verif.c
 NAME	  = philo.a
 OBJS	  =  ${SRCS:.c=.o}
 EXE       = philo
@@ -25,10 +25,10 @@ ${NAME} : ${OBJS}
 		gcc -Wall -Werror -Wextra main.c ${NAME} -lpthread -o ${EXE}
 
 clean :
-		rm -f ${OBJS} exec
-		rm -f ${EXE}
+		rm -f ${OBJS}
+		rm -f ${NAME}
 
 fclean : clean
-		rm -f ${NAME}
+		rm -f ${EXE}
 
 re : fclean all

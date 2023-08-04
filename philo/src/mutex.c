@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 01:46:15 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/07/26 23:04:12 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/08/04 02:32:48 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	create_mutex(t_philo *philo)
 		i++;
 	}
 	pthread_mutex_init(&philo->utils.talk, NULL);
-	pthread_mutex_init(&philo->utils.die, NULL);
 	return ;
 }
 

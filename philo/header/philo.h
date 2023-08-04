@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 22:35:12 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/08/02 01:54:07 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/08/04 02:48:56 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_utils
 	pthread_mutex_t		die;
 	int					id;
 	int					eat[201];
+	long long			time_in_ms[201];
 	int					all_eat;
 }	t_utils;
 
@@ -63,13 +64,13 @@ int			arg_error_3(void);
 int			arg_error_4(void);
 
 void		philosopher_thinking(t_philo *philo, int id);
-int			philosopher_eating(t_philo *philo, int id, long long last);
+void		philosopher_eating(t_philo *philo, int id);
 void		philosopher_sleeping(t_philo *philo, int id, long long last);
 void		philosopher_died(t_philo *philo, int id);
 void		eat_verif(t_philo *philo, int id);
 int			dead_verif(long long time_in_ms, t_philo *philo, int id);
 void		*p(void *void_philo);
-int			thread_create(t_philo *philo);
+int			thread_create(t_philo *philo, int i);
 void		*unique_philosopher2(void *void_unique);
 int			unique_case(int argc, char **argv);
 int			philo_unlock(t_philo *philo, int id, bool all);

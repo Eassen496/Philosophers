@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 23:58:46 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/08/01 00:33:57 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/08/04 02:55:47 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	philo_main(int argc, char **argv)
 	else
 		philo->limit_eat = -1;
 	create_mutex(philo);
-	thread_create(philo);
+	thread_create(philo, 0);
 	if (philo->isdead == true)
 	{
 		destroy_mutex(philo);

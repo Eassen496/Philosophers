@@ -6,7 +6,7 @@
 /*   By: ale-roux <ale-roux@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 01:42:56 by ale-roux          #+#    #+#             */
-/*   Updated: 2023/08/02 01:52:40 by ale-roux         ###   ########.fr       */
+/*   Updated: 2023/08/04 03:12:25 by ale-roux         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,25 @@
 void	*p(void *void_philo)
 {
 	int			id;
-	long long	time_in_ms;
 	t_philo		*philo;
 
 	philo = (t_philo *)void_philo;
 	id = philo->utils.id;
-	time_in_ms = get_ms() - philo->time.in_ms_start;
-	pthread_mutex_lock(&philo->utils.die);
+	philo->utils.time_in_ms[id] = get_ms() - philo->time.in_ms_start;
 	while (philo->isdead == false)
 	{
-		pthread_mutex_unlock(&philo->utils.die);
 		philosopher_thinking(philo, id);
-		if (dead_verif(time_in_ms, philo, id) == 1)
+		if (philo->isdead == true)
 			break ;
-		time_in_ms = philosopher_eating(philo, id, time_in_ms);
+		philosopher_eating(philo, id);
 		if ((id == philo->nphilo || id == philo->nphilo - 1) && id % 2 == 0)
 			eat_verif(philo, id);
-		philosopher_sleeping(philo, id, time_in_ms);
-		if (dead_verif(time_in_ms, philo, id) == 1)
+		if (philo->isdead == true)
 			break ;
-		pthread_mutex_lock(&philo->utils.die);
+		philosopher_sleeping(philo, id, philo->utils.time_in_ms[id]);
+		if (philo->isdead == true)
+			break ;
 	}
-	pthread_mutex_unlock(&philo->utils.die);
 	return (NULL);
 }
 
@@ -53,25 +50,28 @@ void	thread_join(t_philo *philo)
 	}
 }
 
-int	thread_create(t_philo *philo)
+int	thread_create(t_philo *philo, int i)
 {
-	int	i;
-
-	i = 0;
 	philo->time.in_ms_start = get_ms();
 	while (i < philo->nphilo)
 	{
 		philo->utils.id = i + 1;
 		pthread_create(&philo->utils.thread[i += 2], NULL, p, (void *)philo);
-		usleep(100);
+		usleep(50);
 	}
-	usleep(50);
 	i = 1;
 	while (i < philo->nphilo)
 	{
 		philo->utils.id = i + 1;
 		pthread_create(&philo->utils.thread[i += 2], NULL, p, (void *)philo);
-		usleep(100);
+		usleep(50);
+	}
+	while (philo->isdead == false)
+	{
+		i = 1;
+		while (dead_verif(philo->utils.time_in_ms[i], philo, i) == 0
+			&& i < philo->nphilo)
+			i++;
 	}
 	thread_join(philo);
 	return (0);
